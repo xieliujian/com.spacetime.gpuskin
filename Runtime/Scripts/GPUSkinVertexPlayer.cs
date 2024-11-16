@@ -2,66 +2,99 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class GPUSkinVertexPlayer : GPUSkinPlayerBase
+
+namespace ST.GPUSkin
 {
-    public GPUSkinVertexInfo info;
-
-    protected override GPUSkinInfo[] GetInfoList()
+    /// <summary>
+    /// 
+    /// </summary>
+    [ExecuteInEditMode]
+    public class GPUSkinVertexPlayer : GPUSkinPlayerBase
     {
-        if (info == null)
-            return null;
+        /// <summary>
+        /// 
+        /// </summary>
+        public GPUSkinVertexInfo info;
 
-        return info.infoList;
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected override GPUSkinInfo[] GetInfoList()
+        {
+            if (info == null)
+                return null;
+
+            return info.infoList;
+        }
 
 #if !SOUL_ENGINE
-    protected override void OnEditorValidate(MeshFilter mf, MeshRenderer renderer)
-    {
-        if (info == null)
-            return;
-        
-        if (renderer.sharedMaterial != null)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mf"></param>
+        /// <param name="renderer"></param>
+        protected override void OnEditorValidate(MeshFilter mf, MeshRenderer renderer)
         {
-            renderer.sharedMaterial.SetTexture("_VertexAnimTex", info.texture);
-            renderer.sharedMaterial.SetFloat("_VertexAnimTexWidth", info.texWidth);
-            renderer.sharedMaterial.SetFloat("_VertexAnimTexHeight", info.texHeight);
-            renderer.sharedMaterial.SetFloat("_VertexCount", info.vertexCount);
+            if (info == null)
+                return;
+
+            if (renderer.sharedMaterial != null)
+            {
+                renderer.sharedMaterial.SetTexture("_VertexAnimTex", info.texture);
+                renderer.sharedMaterial.SetFloat("_VertexAnimTexWidth", info.texWidth);
+                renderer.sharedMaterial.SetFloat("_VertexAnimTexHeight", info.texHeight);
+                renderer.sharedMaterial.SetFloat("_VertexCount", info.vertexCount);
+            }
+
+            InitAnimationNameList();
+
+            if (info.infoList == null)
+            {
+                Play(-1);
+                return;
+            }
+
+            if (m_AnimationIndex >= info.infoList.Length)
+            {
+                Play(info.infoList.Length - 1);
+            }
+            else if (m_AnimationIndex < 0)
+            {
+                Play(0);
+            }
         }
 
-        InitAnimationNameList();
-
-        if (info.infoList == null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="renderer"></param>
+        /// <param name="currentInfo"></param>
+        /// <param name="block"></param>
+        protected override void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block)
         {
-            Play(-1);
-            return;
+            OnSetPropertyBlock(renderer, currentInfo, block);
         }
-        
-        if (m_AnimationIndex >= info.infoList.Length)
-        {
-            Play(info.infoList.Length - 1);
-        }
-        else if (m_AnimationIndex < 0)
-        {
-            Play(0);
-        }
-    }
-
-    protected override void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block)
-    {
-       OnSetPropertyBlock(renderer, currentInfo, block);
-    }
 #endif
 
-    protected override void OnSetPropertyBlock(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block)
-    {
-        if (renderer == null || block == null)
-            return;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="renderer"></param>
+        /// <param name="currentInfo"></param>
+        /// <param name="block"></param>
+        protected override void OnSetPropertyBlock(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block)
+        {
+            if (renderer == null || block == null)
+                return;
 
-        renderer.GetPropertyBlock(block);
-        block.SetFloat(STR_CUR_FRAME, m_LastFrameIndex);
-        block.SetFloat(STR_CUR_FRAME_PIXEL_INDEX, currentInfo.startPixelIndex);
-        block.SetFloat(STR_CUR_FRAME_COUNT, currentInfo.frameCount);
-        renderer.SetPropertyBlock(block);
+            renderer.GetPropertyBlock(block);
+            block.SetFloat(STR_CUR_FRAME, m_LastFrameIndex);
+            block.SetFloat(STR_CUR_FRAME_PIXEL_INDEX, currentInfo.startPixelIndex);
+            block.SetFloat(STR_CUR_FRAME_COUNT, currentInfo.frameCount);
+            renderer.SetPropertyBlock(block);
+        }
     }
 }
+
