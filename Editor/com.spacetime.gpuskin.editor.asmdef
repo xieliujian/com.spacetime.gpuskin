@@ -1,0 +1,16 @@
+{
+    "name": "com.spacetime.gpuskin.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:56c467d1841132344ab042c6aefb21a1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
