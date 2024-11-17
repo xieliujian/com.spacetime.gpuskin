@@ -69,7 +69,7 @@ namespace ST.GPUSkin
         void InitMaterial(MeshRenderer renderer)
         {
             Material mat = renderer.sharedMaterial;
-            if (mat != null)
+            if (mat == null)
                 return;
 
             mat.SetTexture(GPUSkinDefine.GPUSKIN_SHADER_VERTEX_ANIM_TEX_ID, infoDB.texture);

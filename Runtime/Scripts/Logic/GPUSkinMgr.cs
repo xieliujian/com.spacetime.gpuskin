@@ -51,7 +51,9 @@ namespace ST.GPUSkin
         /// </summary>
         public void OnUpdate()
         {
+#if ST_GAME_MODE
             RefreshGlobalFrameIndex();
+#endif
         }
 
         /// <summary>
