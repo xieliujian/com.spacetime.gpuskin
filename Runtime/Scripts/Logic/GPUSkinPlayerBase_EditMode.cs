@@ -19,11 +19,11 @@ namespace ST.GPUSkin
         void OnValidate()
         {
             MeshFilter mf = gameObject.GetComponentInChildren<MeshFilter>();
-            m_MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
+            meshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
 
-            if (mf != null && m_MeshRenderer != null)
+            if (mf != null && meshRenderer != null)
             {
-                OnEditorValidate(mf, m_MeshRenderer);
+                OnEditorValidate(mf, meshRenderer);
             }
         }
 
@@ -32,7 +32,7 @@ namespace ST.GPUSkin
         /// </summary>
         void Update()
         {
-            if (m_AnimationIndex < 0 || m_MeshRenderer == null)
+            if (m_AnimationIndex < 0 || meshRenderer == null)
                 return;
 
             float frameTime = 1.0f / m_CurrentPlayInfo.frameRate;
@@ -42,7 +42,7 @@ namespace ST.GPUSkin
                 m_LastFrameTime = Time.time;
                 m_LastFrameIndex = (m_LastFrameIndex + 1) % m_CurrentPlayInfo.frameCount;
 
-                OnUpdateSkin(m_MeshRenderer, m_CurrentPlayInfo, m_Block);
+                OnUpdateSkin(meshRenderer, m_CurrentPlayInfo, m_Block);
             }
         }
 

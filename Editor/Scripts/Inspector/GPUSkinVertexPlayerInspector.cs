@@ -29,20 +29,8 @@ namespace ST.GPUSkin
         /// </summary>
         public override void OnInspectorGUI()
         {
-            DrawBaseInspector();
+            base.OnInspectorGUI();
             DrawPlayBtn();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        void DrawBaseInspector()
-        {
-            m_Target.meshRenderer = EditorGUILayout.ObjectField("MeshRender", m_Target.meshRenderer, 
-                typeof(MeshRenderer), true) as MeshRenderer;
-
-            m_Target.infoDB = EditorGUILayout.ObjectField("GPUSkinVertexInfoDB", m_Target.infoDB,
-                typeof(GPUSkinVertexInfoDB), false) as GPUSkinVertexInfoDB;
         }
 
         /// <summary>

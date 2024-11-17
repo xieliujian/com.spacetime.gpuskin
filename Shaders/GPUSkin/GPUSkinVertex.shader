@@ -9,6 +9,7 @@
         _CurFramePixelIndex ("Current Frame Pixel Index", Float) = 0
 		_CurFrameCount("Frame Count", Float) = 30
     }
+    
     SubShader
     {
         Tags { "RenderType"="Opaque" }

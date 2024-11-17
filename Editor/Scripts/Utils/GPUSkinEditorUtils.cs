@@ -405,8 +405,8 @@ namespace ST.GPUSkin
                             var script = newGo.AddComponent<GPUSkinBonePlayer>();
                             if (script != null)
                             {
-                                script.SetBoneInfoDB(assetInfo);
-                                script.SetMeshRender(meshRender);
+                                script.meshRenderer = meshRender;
+                                script.infoDB = assetInfo;
                             }
                         }
                     }
@@ -418,8 +418,8 @@ namespace ST.GPUSkin
                             var script = newGo.AddComponent<GPUSkinVertexPlayer>();
                             if (script != null)
                             {
-                                script.SetVertexInfoDB(assetInfo);
-                                script.SetMeshRender(meshRender);
+                                script.meshRenderer = meshRender;
+                                script.infoDB = assetInfo;
                             }
                         }
                     }

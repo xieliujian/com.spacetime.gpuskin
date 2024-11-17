@@ -15,11 +15,6 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        MeshRenderer m_MeshRenderer;
-
-        /// <summary>
-        /// 
-        /// </summary>
         GPUSkinInfoDB[] m_Infos;
 
         /// <summary>
@@ -55,11 +50,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public MeshRenderer meshRenderer
-        {
-            get { return m_MeshRenderer; }
-            set { m_MeshRenderer = value; }
-        }
+        public MeshRenderer meshRenderer;
 
         /// <summary>
         /// 
@@ -74,15 +65,6 @@ namespace ST.GPUSkin
         /// </summary>
         /// <returns></returns>
         protected abstract GPUSkinInfoDB[] GetInfoList();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="render"></param>
-        public void SetMeshRender(MeshRenderer render)
-        {
-            m_MeshRenderer = render;
-        }
 
         /// <summary>
         /// 
@@ -129,7 +111,7 @@ namespace ST.GPUSkin
                 m_AnimationIndex = -1;
             }
 
-            OnSetPropertyBlock(m_MeshRenderer, m_CurrentPlayInfo, m_Block);
+            OnSetPropertyBlock(meshRenderer, m_CurrentPlayInfo, m_Block);
         }
 
         /// <summary>
@@ -165,7 +147,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        void OnEnable()
+        public void Init()
         {
             m_LastFrameTime = Time.time;
             m_LastFrameIndex = Random.Range(0, 100);
@@ -177,6 +159,14 @@ namespace ST.GPUSkin
 
             InitAnimationNameList();
             Play(0);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void OnEnable()
+        {
+            Init();
         }
 
         /// <summary>

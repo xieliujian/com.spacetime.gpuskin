@@ -14,25 +14,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        GPUSkinVertexInfoDB m_InfoDB;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public GPUSkinVertexInfoDB infoDB
-        {
-            get { return m_InfoDB; }
-            set { m_InfoDB = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="infoDB"></param>
-        public void SetVertexInfoDB(GPUSkinVertexInfoDB infoDB)
-        {
-            m_InfoDB = infoDB;
-        }
+        public GPUSkinVertexInfoDB infoDB;
 
         /// <summary>
         /// 
@@ -40,10 +22,10 @@ namespace ST.GPUSkin
         /// <returns></returns>
         protected override GPUSkinInfoDB[] GetInfoList()
         {
-            if (m_InfoDB == null)
+            if (infoDB == null)
                 return null;
 
-            return m_InfoDB.infoList;
+            return infoDB.infoList;
         }
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace ST.GPUSkin
         /// <param name="renderer"></param>
         protected override void OnEditorValidate(MeshFilter mf, MeshRenderer renderer)
         {
-            if (m_InfoDB == null)
+            if (infoDB == null)
                 return;
 
             InitMaterial(renderer);
@@ -44,7 +44,7 @@ namespace ST.GPUSkin
         /// </summary>
         void PlayAnimValidate()
         {
-            var infoList = m_InfoDB.infoList;
+            var infoList = infoDB.infoList;
             if (infoList == null)
             {
                 Play(-1);
@@ -72,10 +72,10 @@ namespace ST.GPUSkin
             if (mat != null)
                 return;
 
-            mat.SetTexture(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_ID, m_InfoDB.texture);
-            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_WIDTH_ID, m_InfoDB.texWidth);
-            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_HEIGHT_ID, m_InfoDB.texHeight);
-            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_COUNT_ID, m_InfoDB.boneCount);
+            mat.SetTexture(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_ID, infoDB.texture);
+            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_WIDTH_ID, infoDB.texWidth);
+            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_HEIGHT_ID, infoDB.texHeight);
+            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_COUNT_ID, infoDB.boneCount);
         }
 #endif
     }

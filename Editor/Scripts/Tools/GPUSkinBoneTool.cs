@@ -300,7 +300,7 @@ namespace ST.GPUSkin
             string dirAssetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             dirAssetPath = Path.GetDirectoryName(dirAssetPath) + "/";
 
-            GPUSkinBoneBake(dirAssetPath);
+            GPUSkinBoneBake(dirAssetPath, dirAssetPath);
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace ST.GPUSkin
             if (obj == null || clips == null || info == null)
                 return;
 
-            string outputSrcDir = dstpath + GPU_SKIN_DIR;
+            string outputSrcDir = dstpath + GPU_SKIN_BONE_DIR;
             var outputDir = outputSrcDir.ToLower();
 
             if (!Directory.Exists(outputDir))
