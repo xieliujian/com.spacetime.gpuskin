@@ -345,7 +345,7 @@ namespace ST.GPUSkin
                 {
                     if (isbonebake)
                     {
-                        var assetinfo = AssetDatabase.LoadAssetAtPath<GPUSkinBoneInfo>(dstInfoPath);
+                        var assetinfo = AssetDatabase.LoadAssetAtPath<GPUSkinBoneInfoDB>(dstInfoPath);
                         if (assetinfo != null)
                         {
                             var script = newGo.AddComponent<GPUSkinBonePlayer>();
@@ -358,7 +358,7 @@ namespace ST.GPUSkin
                     }
                     else
                     {
-                        var assetinfo = AssetDatabase.LoadAssetAtPath<GPUSkinVertexInfo>(dstInfoPath);
+                        var assetinfo = AssetDatabase.LoadAssetAtPath<GPUSkinVertexInfoDB>(dstInfoPath);
                         if (assetinfo != null)
                         {
                             var script = newGo.AddComponent<GPUSkinVertexPlayer>();

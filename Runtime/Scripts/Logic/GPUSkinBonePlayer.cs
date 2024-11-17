@@ -13,13 +13,13 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public GPUSkinBoneInfo info;
+        public GPUSkinBoneInfoDB info;
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected override GPUSkinInfo[] GetInfoList()
+        protected override GPUSkinInfoDB[] GetInfoList()
         {
             if (info == null)
                 return null;
@@ -71,7 +71,7 @@ namespace ST.GPUSkin
         /// <param name="renderer"></param>
         /// <param name="currentInfo"></param>
         /// <param name="block"></param>
-        protected override void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block)
+        protected override void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfoDB currentInfo, MaterialPropertyBlock block)
         {
             OnSetPropertyBlock(renderer, currentInfo, block);
         }
@@ -84,7 +84,7 @@ namespace ST.GPUSkin
         /// <param name="renderer"></param>
         /// <param name="currentInfo"></param>
         /// <param name="block"></param>
-        protected override void OnSetPropertyBlock(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block)
+        protected override void OnSetPropertyBlock(MeshRenderer renderer, GPUSkinInfoDB currentInfo, MaterialPropertyBlock block)
         {
             if (renderer == null || block == null)
                 return;

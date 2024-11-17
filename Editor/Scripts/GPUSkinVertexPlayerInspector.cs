@@ -13,7 +13,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        List<GPUSkinInfo> m_Infos = new List<GPUSkinInfo>();
+        List<GPUSkinInfoDB> m_Infos = new List<GPUSkinInfoDB>();
         
         /// <summary>
         /// 
@@ -52,7 +52,7 @@ namespace ST.GPUSkin
                 {
                     EditorGUILayout.BeginHorizontal();
 
-                    GPUSkinInfo info = m_Infos[i];
+                    GPUSkinInfoDB info = m_Infos[i];
 
                     string actionName = info.name;
 

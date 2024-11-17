@@ -46,7 +46,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        GPUSkinInfo[] m_Infos;
+        GPUSkinInfoDB[] m_Infos;
 
         /// <summary>
         /// 
@@ -61,7 +61,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        GPUSkinInfo m_CurrentPlayInfo;
+        GPUSkinInfoDB m_CurrentPlayInfo;
 
         /// <summary>
         /// 
@@ -83,7 +83,7 @@ namespace ST.GPUSkin
         /// <param name="renderer"></param>
         /// <param name="currentInfo"></param>
         /// <param name="block"></param>
-        protected abstract void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block);
+        protected abstract void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfoDB currentInfo, MaterialPropertyBlock block);
 #endif
 
         /// <summary>
@@ -92,19 +92,19 @@ namespace ST.GPUSkin
         /// <param name="renderer"></param>
         /// <param name="currentInfo"></param>
         /// <param name="block"></param>
-        protected abstract void OnSetPropertyBlock(MeshRenderer renderer, GPUSkinInfo currentInfo, MaterialPropertyBlock block);
+        protected abstract void OnSetPropertyBlock(MeshRenderer renderer, GPUSkinInfoDB currentInfo, MaterialPropertyBlock block);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected abstract GPUSkinInfo[] GetInfoList();
+        protected abstract GPUSkinInfoDB[] GetInfoList();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="list"></param>
-        public void GetInfos(List<GPUSkinInfo> list)
+        public void GetInfos(List<GPUSkinInfoDB> list)
         {
             if (list == null)
             {
@@ -171,7 +171,7 @@ namespace ST.GPUSkin
         /// <param name="index"></param>
         /// <param name="gpuSkinInfo"></param>
         /// <returns></returns>
-        public bool GetInfo(int index, out GPUSkinInfo gpuSkinInfo)
+        public bool GetInfo(int index, out GPUSkinInfoDB gpuSkinInfo)
         {
             gpuSkinInfo = default;
 
@@ -251,7 +251,7 @@ namespace ST.GPUSkin
 
             for (int i = 0; i < m_Infos.Length; i++)
             {
-                GPUSkinInfo info = m_Infos[i];
+                GPUSkinInfoDB info = m_Infos[i];
                 m_ActionNameToIndexDic[info.name] = i;
             }
         }

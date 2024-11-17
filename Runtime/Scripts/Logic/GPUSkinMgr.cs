@@ -18,7 +18,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public static GPUSkinMgr instance
+        public static GPUSkinMgr S
         {
             get
             {

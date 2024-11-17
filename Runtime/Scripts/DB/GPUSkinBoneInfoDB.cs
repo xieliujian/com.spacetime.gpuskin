@@ -9,7 +9,7 @@ namespace ST.GPUSkin
     /// <summary>
     /// 
     /// </summary>
-    public class GPUSkinVertexInfo : ScriptableObject
+    public class GPUSkinBoneInfoDB : ScriptableObject
     {
         /// <summary>
         /// 
@@ -19,13 +19,13 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public GPUSkinInfo[] infoList;
+        public GPUSkinInfoDB[] infoList;
 
         /// <summary>
         /// 
         /// </summary>
         public int texWidth;
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -39,6 +39,8 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public int vertexCount;
+        public int boneCount;
     }
 }
+
+

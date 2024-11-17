@@ -44,7 +44,7 @@ namespace ST.GPUSkin
         /// <param name="obj"></param>
         /// <param name="clips"></param>
         /// <returns></returns>
-        public static GPUSkinVertexInfo CreateGPUSkinVertexInfo(GameObject obj, List<AnimationClip> clips)
+        public static GPUSkinVertexInfoDB CreateGPUSkinVertexInfo(GameObject obj, List<AnimationClip> clips)
         {
             if (obj == null || clips == null || clips.Count == 0)
             {
@@ -66,7 +66,7 @@ namespace ST.GPUSkin
             animator.runtimeAnimatorController = controller;
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
-            GPUSkinVertexInfo info = ScriptableObject.CreateInstance<GPUSkinVertexInfo>();
+            GPUSkinVertexInfoDB info = ScriptableObject.CreateInstance<GPUSkinVertexInfoDB>();
             info.mesh = CreateNewMesh(smrs[0]);
             CreateAnimationInfo(info, clips);
 
@@ -82,14 +82,14 @@ namespace ST.GPUSkin
         /// <param name="animator"></param>
         /// <param name="smr"></param>
         /// <param name="animationInfo"></param>
-        static void BakeAnimation2Tex(Animator animator, SkinnedMeshRenderer smr, GPUSkinVertexInfo animationInfo)
+        static void BakeAnimation2Tex(Animator animator, SkinnedMeshRenderer smr, GPUSkinVertexInfoDB animationInfo)
         {
             int texWidth = animationInfo.texWidth;
             int texHeight = animationInfo.texHeight;
 
             Mesh newMesh = new Mesh();
 
-            foreach (GPUSkinInfo info in animationInfo.infoList)
+            foreach (GPUSkinInfoDB info in animationInfo.infoList)
             {
                 GPUSkinEditorUtils.BakeAnimatorFrame(animator, info.name, info.frameRate, info.frameCount);
 
@@ -127,7 +127,7 @@ namespace ST.GPUSkin
         /// </summary>
         /// <param name="info"></param>
         /// <param name="clips"></param>
-        static void CreateAnimationInfo(GPUSkinVertexInfo info, List<AnimationClip> clips)
+        static void CreateAnimationInfo(GPUSkinVertexInfoDB info, List<AnimationClip> clips)
         {
             int vertexCount = info.mesh.vertexCount;
             int texWidth = 0;
@@ -156,14 +156,14 @@ namespace ST.GPUSkin
 
             int totalPixelCount = 0;
 
-            info.infoList = new GPUSkinInfo[clips.Count];
+            info.infoList = new GPUSkinInfoDB[clips.Count];
             for (int i = 0; i < clips.Count; ++i)
             {
                 AnimationClip clip = clips[i];
                 int frameCount = (int)(clip.length * clip.frameRate * FRAME_RAME_MULTI);
                 pixelCount = frameCount * vertexCount;
 
-                GPUSkinInfo animationInfo = new GPUSkinInfo();
+                GPUSkinInfoDB animationInfo = new GPUSkinInfoDB();
                 animationInfo.name = clip.name;
                 animationInfo.startPixelIndex = totalPixelCount;
                 animationInfo.totalPixelCount = pixelCount;
@@ -250,7 +250,7 @@ namespace ST.GPUSkin
         {
             GameObject obj = GPUSkinEditorUtils.GetDirModleGameObject(dirAssetPath);
             List<AnimationClip> clips = GPUSkinEditorUtils.GetDirAnimationClips(dirAssetPath);
-            GPUSkinVertexInfo info = CreateGPUSkinVertexInfo(obj, clips);
+            GPUSkinVertexInfoDB info = CreateGPUSkinVertexInfo(obj, clips);
 
             string outputDir = dirAssetPath + GPU_SKIN_VERTEX_DIR;
 
@@ -268,7 +268,7 @@ namespace ST.GPUSkin
         {
             GameObject obj = GPUSkinEditorUtils.GetDirModleGameObject(srcpath);
             List<AnimationClip> clips = GPUSkinEditorUtils.GetDirAnimationClips(srcpath);
-            GPUSkinVertexInfo info = CreateGPUSkinVertexInfo(obj, clips);
+            GPUSkinVertexInfoDB info = CreateGPUSkinVertexInfo(obj, clips);
 
             if (obj == null || clips == null || info == null)
                 return;

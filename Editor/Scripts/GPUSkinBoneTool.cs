@@ -44,7 +44,7 @@ namespace ST.GPUSkin
         /// <param name="obj"></param>
         /// <param name="clips"></param>
         /// <returns></returns>
-        public static GPUSkinBoneInfo CreateGPUSkinBoneInfo(GameObject obj, List<AnimationClip> clips)
+        public static GPUSkinBoneInfoDB CreateGPUSkinBoneInfo(GameObject obj, List<AnimationClip> clips)
         {
             if (obj == null || clips == null || clips.Count == 0)
             {
@@ -66,7 +66,7 @@ namespace ST.GPUSkin
             animator.runtimeAnimatorController = controller;
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
-            GPUSkinBoneInfo info = ScriptableObject.CreateInstance<GPUSkinBoneInfo>();
+            GPUSkinBoneInfoDB info = ScriptableObject.CreateInstance<GPUSkinBoneInfoDB>();
             info.mesh = CreateNewMesh(smrs[0]);
             CreateAnimationInfo(info, clips);
 
@@ -82,7 +82,7 @@ namespace ST.GPUSkin
         /// <param name="animator"></param>
         /// <param name="smr"></param>
         /// <param name="boneAnimationInfo"></param>
-        static void BakeAnimation2Tex(Animator animator, SkinnedMeshRenderer smr, GPUSkinBoneInfo boneAnimationInfo)
+        static void BakeAnimation2Tex(Animator animator, SkinnedMeshRenderer smr, GPUSkinBoneInfoDB boneAnimationInfo)
         {
             int boneCount = smr.bones.Length;
             int texWidth = boneAnimationInfo.texWidth;
@@ -93,7 +93,7 @@ namespace ST.GPUSkin
             Matrix4x4[] orignalBindPoses = smr.sharedMesh.bindposes;
             Transform[] bones = null;
 
-            foreach (GPUSkinInfo info in boneAnimationInfo.infoList)
+            foreach (GPUSkinInfoDB info in boneAnimationInfo.infoList)
             {
                 int totalCount = 0;
                 GPUSkinEditorUtils.BakeAnimatorFrame(animator, info.name, info.frameRate, info.frameCount);
@@ -146,7 +146,7 @@ namespace ST.GPUSkin
         /// </summary>
         /// <param name="info"></param>
         /// <param name="clips"></param>
-        static void CreateAnimationInfo(GPUSkinBoneInfo info, List<AnimationClip> clips)
+        static void CreateAnimationInfo(GPUSkinBoneInfoDB info, List<AnimationClip> clips)
         {
             int vertexCount = info.mesh.vertexCount;
             int boneCount = info.mesh.bindposes.Length;
@@ -175,14 +175,14 @@ namespace ST.GPUSkin
 
             int totalPixelCount = 0;
 
-            info.infoList = new GPUSkinInfo[clips.Count];
+            info.infoList = new GPUSkinInfoDB[clips.Count];
             for (int i = 0; i < clips.Count; ++i)
             {
                 AnimationClip clip = clips[i];
                 int frameCount = (int)(clip.length * clip.frameRate * FRAME_RAME_MULTI);
                 pixelCount = frameCount * 4 * boneCount;
 
-                GPUSkinInfo animationInfo = new GPUSkinInfo();
+                GPUSkinInfoDB animationInfo = new GPUSkinInfoDB();
                 animationInfo.name = clip.name;
                 animationInfo.startPixelIndex = totalPixelCount;
                 animationInfo.totalPixelCount = pixelCount;
@@ -323,7 +323,7 @@ namespace ST.GPUSkin
         {
             GameObject obj = GPUSkinEditorUtils.GetDirModleGameObject(dirAssetPath);
             List<AnimationClip> clips = GPUSkinEditorUtils.GetDirAnimationClips(dirAssetPath);
-            GPUSkinBoneInfo info = CreateGPUSkinBoneInfo(obj, clips);
+            GPUSkinBoneInfoDB info = CreateGPUSkinBoneInfo(obj, clips);
 
             string outputDir = dirAssetPath + GPU_SKIN_BONE_DIR;
 
@@ -341,7 +341,7 @@ namespace ST.GPUSkin
         {
             GameObject obj = GPUSkinEditorUtils.GetDirModleGameObject(srcpath);
             List<AnimationClip> clips = GPUSkinEditorUtils.GetDirAnimationClips(srcpath);
-            GPUSkinBoneInfo info = CreateGPUSkinBoneInfo(obj, clips);
+            GPUSkinBoneInfoDB info = CreateGPUSkinBoneInfo(obj, clips);
 
             if (obj == null || clips == null || info == null)
                 return;
