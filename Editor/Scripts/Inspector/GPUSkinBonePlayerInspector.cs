@@ -30,7 +30,6 @@ namespace ST.GPUSkin
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-
             DrawPlayBtn();
         }
 
@@ -39,7 +38,7 @@ namespace ST.GPUSkin
         /// </summary>
         void DrawPlayBtn()
         {
-            if (EditorUtils.DrawHeader("Play Animation"))
+            if (GPUSkinEditorUtils.DrawHeader("Play Animation"))
             {
                 EditorGUILayout.BeginVertical("Box", GUILayout.MinHeight(10f));
 
@@ -67,7 +66,6 @@ namespace ST.GPUSkin
 
                     EditorGUILayout.EndHorizontal();
                 }
-
 
                 EditorGUILayout.EndVertical();
             }
