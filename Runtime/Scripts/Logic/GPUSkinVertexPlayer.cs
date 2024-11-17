@@ -9,7 +9,7 @@ namespace ST.GPUSkin
     /// 
     /// </summary>
     [ExecuteInEditMode]
-    public class GPUSkinVertexPlayer : GPUSkinPlayerBase
+    public partial class GPUSkinVertexPlayer : GPUSkinPlayerBase
     {
         /// <summary>
         /// 
@@ -28,56 +28,6 @@ namespace ST.GPUSkin
             return info.infoList;
         }
 
-#if !SOUL_ENGINE
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mf"></param>
-        /// <param name="renderer"></param>
-        protected override void OnEditorValidate(MeshFilter mf, MeshRenderer renderer)
-        {
-            if (info == null)
-                return;
-
-            if (renderer.sharedMaterial != null)
-            {
-                renderer.sharedMaterial.SetTexture("_VertexAnimTex", info.texture);
-                renderer.sharedMaterial.SetFloat("_VertexAnimTexWidth", info.texWidth);
-                renderer.sharedMaterial.SetFloat("_VertexAnimTexHeight", info.texHeight);
-                renderer.sharedMaterial.SetFloat("_VertexCount", info.vertexCount);
-            }
-
-            InitAnimationNameList();
-
-            if (info.infoList == null)
-            {
-                Play(-1);
-                return;
-            }
-
-            if (m_AnimationIndex >= info.infoList.Length)
-            {
-                Play(info.infoList.Length - 1);
-            }
-            else if (m_AnimationIndex < 0)
-            {
-                Play(0);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="renderer"></param>
-        /// <param name="currentInfo"></param>
-        /// <param name="block"></param>
-        protected override void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfoDB currentInfo, MaterialPropertyBlock block)
-        {
-            OnSetPropertyBlock(renderer, currentInfo, block);
-        }
-#endif
-
         /// <summary>
         /// 
         /// </summary>
@@ -90,9 +40,9 @@ namespace ST.GPUSkin
                 return;
 
             renderer.GetPropertyBlock(block);
-            block.SetFloat(STR_CUR_FRAME, m_LastFrameIndex);
-            block.SetFloat(STR_CUR_FRAME_PIXEL_INDEX, currentInfo.startPixelIndex);
-            block.SetFloat(STR_CUR_FRAME_COUNT, currentInfo.frameCount);
+            block.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_COMMON_CUR_FRAME_ID, m_LastFrameIndex);
+            block.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_COMMON_CUR_FRAME_PIXEL_INDEX_ID, currentInfo.startPixelIndex);
+            block.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_COMMON_CUR_FRAME_COUNT_ID, currentInfo.frameCount);
             renderer.SetPropertyBlock(block);
         }
     }

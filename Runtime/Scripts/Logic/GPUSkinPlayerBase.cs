@@ -10,23 +10,8 @@ namespace ST.GPUSkin
     /// 
     /// </summary>
     [ExecuteInEditMode]
-    public abstract class GPUSkinPlayerBase : MonoBehaviour
+    public abstract partial class GPUSkinPlayerBase : MonoBehaviour
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string STR_CUR_FRAME = "_CurFrame";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string STR_CUR_FRAME_PIXEL_INDEX = "_CurFramePixelIndex";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string STR_CUR_FRAME_COUNT = "_CurFrameCount";
-
         /// <summary>
         /// 
         /// </summary>
@@ -67,24 +52,6 @@ namespace ST.GPUSkin
         /// 
         /// </summary>
         MaterialPropertyBlock m_Block;
-
-#if !SOUL_ENGINE
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mf"></param>
-        /// <param name="renderer"></param>
-        protected abstract void OnEditorValidate(MeshFilter mf, MeshRenderer renderer);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="renderer"></param>
-        /// <param name="currentInfo"></param>
-        /// <param name="block"></param>
-        protected abstract void OnUpdateSkin(MeshRenderer renderer, GPUSkinInfoDB currentInfo, MaterialPropertyBlock block);
-#endif
 
         /// <summary>
         /// 
@@ -200,42 +167,6 @@ namespace ST.GPUSkin
             InitAnimationNameList();
             Play(0);
         }
-
-#if !SOUL_ENGINE
-
-        /// <summary>
-        /// 
-        /// </summary>
-        void OnValidate()
-        {
-            MeshFilter mf = gameObject.GetComponentInChildren<MeshFilter>();
-            m_MeshRenderer = gameObject.GetComponentInChildren<MeshRenderer>();
-
-            if (mf != null && m_MeshRenderer != null)
-            {
-                OnEditorValidate(mf, m_MeshRenderer);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        void Update()
-        {
-            if (m_AnimationIndex < 0 || m_MeshRenderer == null)
-                return;
-
-            float frameTime = 1.0f / m_CurrentPlayInfo.frameRate;
-
-            if (Time.time - m_LastFrameTime >= frameTime)
-            {
-                m_LastFrameTime = Time.time;
-                m_LastFrameIndex = (m_LastFrameIndex + 1) % m_CurrentPlayInfo.frameCount;
-
-                OnUpdateSkin(m_MeshRenderer, m_CurrentPlayInfo, m_Block);
-            }
-        }
-#endif
 
         /// <summary>
         /// 
