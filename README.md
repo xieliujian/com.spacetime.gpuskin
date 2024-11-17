@@ -1,7 +1,7 @@
 
 # 大批量模型渲染
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/1.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/1.png?raw=true)
 
 ## 动画烘培到贴图
 
@@ -10,7 +10,7 @@
 通过Animator的StartRecording和StopRecording函数，可以将一个动画数据一帧帧记录下来, 默认一秒是30帧，假如是一秒的动画，就是有30帧数据
  
 获取模型每一帧每根骨骼的矩阵，然后按照顺序存储到贴图上，一个像素有RGBA四个通道，可以存储矩阵的一行数据，所以一根骨骼矩阵数据需要4个像素存储。存储贴图信息如下所示
- 
+
 frame1
 
 bone1
@@ -27,11 +27,11 @@ frame2 ....
 
 最终存储的骨骼数据贴图如下图所示
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/2.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/2.png?raw=true)
 
 配置数据如下所示
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/3.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/3.png?raw=true)
 
 那么存储到贴图的骨骼数据我们需要怎么读取呢
 
@@ -70,11 +70,11 @@ frame2
 
 最终存储的顶点数据贴图如下图所示
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/4.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/4.png?raw=true)
 
 配置数据如下所示
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/5.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/5.png?raw=true)
 
 存储到贴图的顶点数据读取比较简单
 
@@ -106,40 +106,40 @@ unity 支持GPU instance功能，可以大量减少Draw Call
 
 对于Shader中的实例化参数，需要用UNITY_INSTANCING_BUFFER_START(Props)和UNITY_INSTANCING_BUFFER_END(Props)标记，Shader中获取的时候，通过UNITY_ACCESS_INSTANCED_PROP接口去获取，如下图所示
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/6.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/6.png?raw=true)
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/7.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/7.png?raw=true)
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/8.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/8.png?raw=true)
 
 3. 代码设置
 
 unity提供了MaterialPropertyBlock，可以对同一个材质设置不同的属性值，如下图所示，Shader中传入每个实例的自己的参数值
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/9.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/9.png?raw=true)
 
 如下图所示，创建200个测试Npc, Draw Call 数目只有3个，通过GPU instance, 可以减少大批量的Draw Call数，提高GPU的性能
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/10.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/10.png?raw=true)
 
 ## 游戏内脚本刷新耗时的优化方案
 
 在手机上测试性能，以 Galaxy S8 这部手机为例，发现400个npc, Update耗时会占用 6 ~ 8ms, 
 查看Update函数，就是每帧计算动画的帧信息，中低配手机，Update会占用大量的CPU时间
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/11.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/11.png?raw=true)
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/12.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/12.png?raw=true)
 
 为了解决这个问题，只在每个脚本设置动画的时候设置一下参数值，去掉Update函数
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/13.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/13.png?raw=true)
 
 然后在Shader中有一个全局帧，每隔一帧加一，达到变化动画的目的，这样就解决了脚本耗时的问题
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/14.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/14.png?raw=true)
 
-![GitHub](https://github.com/xieliujian/UnityDemo_GpuSkin/blob/main/Video/15.png?raw=true)
+![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/15.png?raw=true)
 
 ## 总结
 
