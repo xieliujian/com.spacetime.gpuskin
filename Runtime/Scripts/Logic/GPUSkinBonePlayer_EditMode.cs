@@ -20,33 +20,12 @@ namespace ST.GPUSkin
         /// <param name="renderer"></param>
         protected override void OnEditorValidate(MeshFilter mf, MeshRenderer renderer)
         {
-            if (info == null)
+            if (m_InfoDB == null)
                 return;
 
-            if (renderer.sharedMaterial != null)
-            {
-                renderer.sharedMaterial.SetTexture(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_ID, info.texture);
-                renderer.sharedMaterial.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_WIDTH_ID, info.texWidth);
-                renderer.sharedMaterial.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_HEIGHT_ID, info.texHeight);
-                renderer.sharedMaterial.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_COUNT_ID, info.boneCount);
-            }
-
+            InitMaterial(renderer);
             InitAnimationNameList();
-
-            if (info.infoList == null)
-            {
-                Play(-1);
-                return;
-            }
-
-            if (m_AnimationIndex >= info.infoList.Length)
-            {
-                Play(info.infoList.Length - 1);
-            }
-            else if (m_AnimationIndex < 0)
-            {
-                Play(0);
-            }
+            PlayAnimValidate();
         }
 
         /// <summary>
@@ -60,6 +39,44 @@ namespace ST.GPUSkin
             OnSetPropertyBlock(renderer, currentInfo, block);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        void PlayAnimValidate()
+        {
+            var infoList = m_InfoDB.infoList;
+            if (infoList == null)
+            {
+                Play(-1);
+                return;
+            }
+
+            int infoNum = infoList.Length;
+            if (m_AnimationIndex >= infoNum)
+            {
+                Play(infoNum - 1);
+            }
+            else if (m_AnimationIndex < 0)
+            {
+                Play(0);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mat"></param>
+        void InitMaterial(MeshRenderer renderer)
+        {
+            Material mat = renderer.sharedMaterial;
+            if (mat != null)
+                return;
+
+            mat.SetTexture(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_ID, m_InfoDB.texture);
+            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_WIDTH_ID, m_InfoDB.texWidth);
+            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_HEIGHT_ID, m_InfoDB.texHeight);
+            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_COUNT_ID, m_InfoDB.boneCount);
+        }
 #endif
     }
 }

@@ -32,11 +32,6 @@ namespace ST.GPUSkin
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        static readonly int GLOBAL_FRAME_INDEX = Shader.PropertyToID("g_GpuSkinFrameIndex");
-
-        /// <summary>
         /// .
         /// </summary>
         const int FRAME_RATE = 30;
@@ -68,7 +63,7 @@ namespace ST.GPUSkin
             if (Time.time - m_LastFrameTime >= frameTime)
             {
                 m_LastFrameTime = Time.time;
-                Shader.SetGlobalInt(GLOBAL_FRAME_INDEX, m_GlobalFrameIndex++);
+                Shader.SetGlobalInt(GPUSkinDefine.GPUSKIN_SHADER_COMMON_GLOBAL_FRAME_INDEX_ID, m_GlobalFrameIndex++);
             }
         }
     }

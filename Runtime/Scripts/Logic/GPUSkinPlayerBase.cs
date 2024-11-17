@@ -15,18 +15,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public MeshRenderer m_MeshRenderer;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [HideInInspector]
-        public int m_AnimationIndex;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected float m_LastFrameIndex;
+        MeshRenderer m_MeshRenderer;
 
         /// <summary>
         /// 
@@ -56,6 +45,16 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
+        protected float m_LastFrameIndex;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected int m_AnimationIndex;
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="renderer"></param>
         /// <param name="currentInfo"></param>
         /// <param name="block"></param>
@@ -70,13 +69,20 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="render"></param>
+        public void SetMeshRender(MeshRenderer render)
+        {
+            m_MeshRenderer = render;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="list"></param>
         public void GetInfos(List<GPUSkinInfoDB> list)
         {
             if (list == null)
-            {
                 return;
-            }
 
             list.Clear();
 
@@ -93,14 +99,10 @@ namespace ST.GPUSkin
         public void Play(string actionName)
         {
             if (m_Infos == null || string.IsNullOrEmpty(actionName))
-            {
                 return;
-            }
 
             if (!m_ActionNameToIndexDic.TryGetValue(actionName, out int index))
-            {
                 return;
-            }
 
             Play(index);
         }

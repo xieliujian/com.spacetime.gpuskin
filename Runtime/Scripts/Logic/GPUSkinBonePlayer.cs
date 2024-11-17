@@ -13,7 +13,16 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public GPUSkinBoneInfoDB info;
+        protected GPUSkinBoneInfoDB m_InfoDB;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="infoDB"></param>
+        public void SetBoneInfoDB(GPUSkinBoneInfoDB infoDB)
+        {
+            m_InfoDB = infoDB;
+        }
 
         /// <summary>
         /// 
@@ -21,10 +30,10 @@ namespace ST.GPUSkin
         /// <returns></returns>
         protected override GPUSkinInfoDB[] GetInfoList()
         {
-            if (info == null)
+            if (m_InfoDB == null)
                 return null;
 
-            return info.infoList;
+            return m_InfoDB.infoList;
         }
 
         /// <summary>

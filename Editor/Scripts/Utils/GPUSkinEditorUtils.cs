@@ -331,41 +331,41 @@ namespace ST.GPUSkin
                     meshfilter.sharedMesh = mesh;
                 }
 
-                var meshrender = skinGo.AddComponent<MeshRenderer>();
-                if (meshrender != null)
+                var meshRender = skinGo.AddComponent<MeshRenderer>();
+                if (meshRender != null)
                 {
                     var newmat = AssetDatabase.LoadAssetAtPath<Material>(matpath);
                     if (newmat != null)
                     {
-                        meshrender.sharedMaterial = newmat;
+                        meshRender.sharedMaterial = newmat;
                     }
                 }
 
-                if (meshrender != null)
+                if (meshRender != null)
                 {
                     if (isbonebake)
                     {
-                        var assetinfo = AssetDatabase.LoadAssetAtPath<GPUSkinBoneInfoDB>(dstInfoPath);
-                        if (assetinfo != null)
+                        var assetInfo = AssetDatabase.LoadAssetAtPath<GPUSkinBoneInfoDB>(dstInfoPath);
+                        if (assetInfo != null)
                         {
                             var script = newGo.AddComponent<GPUSkinBonePlayer>();
                             if (script != null)
                             {
-                                script.info = assetinfo;
-                                script.m_MeshRenderer = meshrender;
+                                script.SetBoneInfoDB(assetInfo);
+                                script.SetMeshRender(meshRender);
                             }
                         }
                     }
                     else
                     {
-                        var assetinfo = AssetDatabase.LoadAssetAtPath<GPUSkinVertexInfoDB>(dstInfoPath);
-                        if (assetinfo != null)
+                        var assetInfo = AssetDatabase.LoadAssetAtPath<GPUSkinVertexInfoDB>(dstInfoPath);
+                        if (assetInfo != null)
                         {
                             var script = newGo.AddComponent<GPUSkinVertexPlayer>();
                             if (script != null)
                             {
-                                script.info = assetinfo;
-                                script.m_MeshRenderer = meshrender;
+                                script.SetVertexInfoDB(assetInfo);
+                                script.SetMeshRender(meshRender);
                             }
                         }
                     }

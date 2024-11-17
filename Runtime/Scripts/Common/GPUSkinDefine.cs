@@ -15,13 +15,13 @@ namespace ST.GPUSkin
         /// </summary>
         public const string ST_GAME_MODE_DEFINE = "ST_GAME_MODE";
 
-
         /// <summary>
         /// 
         /// </summary>
         public static readonly int GPUSKIN_SHADER_COMMON_CUR_FRAME_ID = Shader.PropertyToID("_CurFrame");
         public static readonly int GPUSKIN_SHADER_COMMON_CUR_FRAME_PIXEL_INDEX_ID = Shader.PropertyToID("_CurFramePixelIndex");
         public static readonly int GPUSKIN_SHADER_COMMON_CUR_FRAME_COUNT_ID = Shader.PropertyToID("_CurFrameCount");
+        public static readonly int GPUSKIN_SHADER_COMMON_GLOBAL_FRAME_INDEX_ID = Shader.PropertyToID("g_GpuSkinFrameIndex");
 
         /// <summary>
         /// 
