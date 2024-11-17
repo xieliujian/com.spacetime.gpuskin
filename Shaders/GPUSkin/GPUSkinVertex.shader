@@ -1,4 +1,4 @@
-﻿Shader "Character/GPUSkinVertex"
+﻿Shader "SpaceTime/Character/GPUSkinVertex"
 {
     Properties
     {

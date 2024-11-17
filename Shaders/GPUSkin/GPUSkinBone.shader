@@ -1,4 +1,4 @@
-﻿Shader "Character/GPUSkinBone"
+﻿Shader "SpaceTime/Character/GPUSkinBone"
 {
     Properties
     {
@@ -95,7 +95,7 @@
 
                 o.vertex = TransformObjectToHClip(v.vertex.xyz);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-
+                
                 uint bone0Index = (uint)v.uv2.x;
                 uint bone1Index = (uint)v.uv2.y;
                 float bone0Weight = v.uv3.x;

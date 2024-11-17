@@ -55,6 +55,15 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
+        public MeshRenderer meshRenderer
+        {
+            get { return m_MeshRenderer; }
+            set { m_MeshRenderer = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="renderer"></param>
         /// <param name="currentInfo"></param>
         /// <param name="block"></param>

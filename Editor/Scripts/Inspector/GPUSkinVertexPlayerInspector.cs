@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace ST.GPUSkin
 {
@@ -28,8 +29,20 @@ namespace ST.GPUSkin
         /// </summary>
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            DrawBaseInspector();
             DrawPlayBtn();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void DrawBaseInspector()
+        {
+            m_Target.meshRenderer = EditorGUILayout.ObjectField("MeshRender", m_Target.meshRenderer, 
+                typeof(MeshRenderer), true) as MeshRenderer;
+
+            m_Target.infoDB = EditorGUILayout.ObjectField("GPUSkinVertexInfoDB", m_Target.infoDB,
+                typeof(GPUSkinVertexInfoDB), false) as GPUSkinVertexInfoDB;
         }
 
         /// <summary>

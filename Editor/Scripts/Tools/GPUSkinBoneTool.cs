@@ -13,8 +13,6 @@ namespace ST.GPUSkin
     /// </summary>
     public class GPUSkinBoneTool : GPUSkinTool
     {
-        #region Defines
-
         /// <summary>
         /// 
         /// </summary>
@@ -23,20 +21,12 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        static string GPU_SKIN_BONE_DIR
-        {
-            get { return "/GPUSkinBone/"; }
-        }
+        static string GPU_SKIN_BONE_DIR = "/GPUSkinBone/";
 
         /// <summary>
         /// 
         /// </summary>
-        static string SHADER_NAME
-        {
-            get { return "Character/GPUSkinBone"; }
-        }
-
-        #endregion
+        static string SHADER_NAME = "SpaceTime/Character/GPUSkinBone";
         
         /// <summary>
         /// 
@@ -304,11 +294,9 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        [MenuItem("Assets/Art/Char/Tools/CreateGPUSkinBoneBake")]
+        [MenuItem("Assets/SpaceTime/GPUSkin/CreateGPUSkinBoneBake")]
         static void ToolsGPUSkinBoneBake()
         {
-            //string dirAssetPath = AssetDatabase.GetAssetPath(Selection.activeObject) + "/";
-
             string dirAssetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             dirAssetPath = Path.GetDirectoryName(dirAssetPath) + "/";
 

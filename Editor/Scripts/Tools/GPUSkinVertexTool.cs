@@ -13,8 +13,6 @@ namespace ST.GPUSkin
     /// </summary>
     public class GPUSkinVertexTool : GPUSkinTool
     {
-        #region Defines
-
         /// <summary>
         /// 
         /// </summary>
@@ -23,20 +21,12 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        static string GPU_SKIN_VERTEX_DIR
-        {
-            get { return "/GPUSkinVertex/"; }
-        }
+        static string GPU_SKIN_VERTEX_DIR = "/GPUSkinVertex/";
 
         /// <summary>
         /// 
         /// </summary>
-        static string SHADER_NAME
-        {
-            get { return "Character/GPUSkinVertex"; }
-        }
-
-        #endregion
+        static string SHADER_NAME = "SpaceTime/Character/GPUSkinVertex";
 
         /// <summary>
         /// 
@@ -231,15 +221,13 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        [MenuItem("Assets/Art/Char/Tools/CreateGPUSkinVertexBake")]
+        [MenuItem("Assets/SpaceTime/GPUSkin/CreateGPUSkinVertexBake")]
         static void ToolsGPUSkinVertexBake()
         {
-            //string dirAssetPath = AssetDatabase.GetAssetPath(Selection.activeObject) + "/";
-
             string dirAssetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             dirAssetPath = Path.GetDirectoryName(dirAssetPath) + "/";
 
-            GPUSkinVertexBake(dirAssetPath);
+            GPUSkinVertexBake(dirAssetPath, dirAssetPath);
         }
 
         /// <summary>
@@ -273,7 +261,7 @@ namespace ST.GPUSkin
             if (obj == null || clips == null || info == null)
                 return;
 
-            string outputSrcDir = dstpath + GPU_SKIN_DIR;
+            string outputSrcDir = dstpath + GPU_SKIN_VERTEX_DIR;
             var outputDir = outputSrcDir.ToLower();
 
             if (!Directory.Exists(outputDir))

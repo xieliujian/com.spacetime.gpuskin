@@ -19,6 +19,15 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
+        public GPUSkinVertexInfoDB infoDB
+        {
+            get { return m_InfoDB; }
+            set { m_InfoDB = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="infoDB"></param>
         public void SetVertexInfoDB(GPUSkinVertexInfoDB infoDB)
         {

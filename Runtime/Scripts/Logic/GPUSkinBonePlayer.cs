@@ -18,6 +18,15 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
+        public GPUSkinBoneInfoDB infoDB
+        {
+            get { return m_InfoDB; }
+            set { m_InfoDB = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="infoDB"></param>
         public void SetBoneInfoDB(GPUSkinBoneInfoDB infoDB)
         {
