@@ -47,7 +47,7 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        const string CONFIG_FILE_NAME = "Config.asset";
+        public const string CONFIG_FILE_NAME = "Config.asset";
 
         /// <summary>
         /// 

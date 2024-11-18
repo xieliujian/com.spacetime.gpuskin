@@ -201,6 +201,11 @@ namespace ST.GPUSkin
             if (animtex == null)
                 return;
 
+            var configPath = srcpath + GPUSkinGenConfigDB.CONFIG_FILE_NAME;
+            var config = AssetDatabase.LoadAssetAtPath<GPUSkinGenConfigDB>(configPath);
+            if (config == null)
+                return;
+
             // 清理dstPath路径所有的材质和prefab
             ClearPrefabPathAllMat(dstSrcPath);
             ClearPrefabPathAllPrefab(dstSrcPath);
@@ -220,7 +225,8 @@ namespace ST.GPUSkin
 
                 // mat
                 var matpath = dstpath + "/mat" + index + ".mat";
-                CreatePrefabMat(shader, maintex, isbonebake, animtex, matpath);
+                var newMat = CreatePrefabMat(shader, maintex, isbonebake, animtex, matpath);
+                config.RefreshMat(newMat, index);
 
                 // prefab
                 var prefabpath = dstpath + "/" + prefabname + index + ".prefab";
@@ -321,11 +327,11 @@ namespace ST.GPUSkin
         /// <param name="isbonebake"></param>
         /// <param name="animtex"></param>
         /// <param name="matpath"></param>
-        static void CreatePrefabMat(Shader shader, Texture maintex, bool isbonebake, Texture animtex, string matpath)
+        static Material CreatePrefabMat(Shader shader, Texture maintex, bool isbonebake, Texture animtex, string matpath)
         {
             Material newmat = new Material(shader);
             if (newmat == null)
-                return;
+                return null;
 
             newmat.SetTexture("_MainTex", maintex);
 
@@ -341,6 +347,8 @@ namespace ST.GPUSkin
             newmat.enableInstancing = true;
 
             AssetDatabase.CreateAsset(newmat, matpath);
+
+            return newmat;
         }
 
         /// <summary>
