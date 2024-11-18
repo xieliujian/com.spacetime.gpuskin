@@ -203,8 +203,6 @@ namespace ST.GPUSkin
 
             var configPath = srcpath + GPUSkinGenConfigDB.CONFIG_FILE_NAME;
             var config = AssetDatabase.LoadAssetAtPath<GPUSkinGenConfigDB>(configPath);
-            if (config == null)
-                return;
 
             // 清理dstPath路径所有的材质和prefab
             ClearPrefabPathAllMat(dstSrcPath);
@@ -226,7 +224,10 @@ namespace ST.GPUSkin
                 // mat
                 var matpath = dstpath + "/mat" + index + ".mat";
                 var newMat = CreatePrefabMat(shader, maintex, isbonebake, animtex, matpath);
-                config.RefreshMat(newMat, index);
+                if (config != null)
+                {
+                    config.RefreshMat(newMat, index);
+                }
 
                 // prefab
                 var prefabpath = dstpath + "/" + prefabname + index + ".prefab";
