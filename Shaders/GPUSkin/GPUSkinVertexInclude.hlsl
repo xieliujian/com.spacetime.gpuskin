@@ -8,6 +8,7 @@ float4 _MainTex_ST;
 sampler2D _VertexAnimTex;			
 float4 _VertexAnimTex_TexelSize;
 float _VertexCount;
+float _AlphaClip;
 
 uniform int g_GpuSkinFrameIndex;
 

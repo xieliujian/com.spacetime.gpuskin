@@ -8,6 +8,7 @@ float4 _MainTex_ST;
 sampler2D _BoneAnimTex;
 float4 _BoneAnimTex_TexelSize;
 float _BoneCount;
+float _AlphaClip;
 
 uniform int g_GpuSkinFrameIndex;
 

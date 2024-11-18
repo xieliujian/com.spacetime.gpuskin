@@ -46,6 +46,11 @@ Varyings GPUSkinVertexVert(Attributes v)
 float4 GPUSkinVertexFrag(Varyings i) : SV_Target
 {
     float4 col = tex2D(_MainTex, i.uv);
+
+#if _ALPHATEST_ON
+    clip(col.a - _AlphaClip);
+#endif
+
     return col;
 }
 
