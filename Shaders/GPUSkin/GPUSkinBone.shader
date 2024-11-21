@@ -41,9 +41,9 @@
             
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
-            #include "GPUSkinBoneCommon.hlsl"
-            #include "GPUSkinBoneInclude.hlsl"
-            #include "GPUSkinBoneForwardPass.hlsl"    
+            #include "GPUSkinBone/GPUSkinBoneCommon.hlsl"
+            #include "GPUSkinBone/GPUSkinBoneInclude.hlsl"
+            #include "GPUSkinBone/GPUSkinBoneForwardPass.hlsl"    
 
             ENDHLSL
         }

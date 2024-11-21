@@ -41,9 +41,9 @@
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
-            #include "GPUSkinVertexCommon.hlsl"
-            #include "GPUSkinVertexInclude.hlsl"
-			#include "GPUSkinVertexForwardPass.hlsl"
+            #include "GPUSkinVertex/GPUSkinVertexCommon.hlsl"
+            #include "GPUSkinVertex/GPUSkinVertexInclude.hlsl"
+			#include "GPUSkinVertex/GPUSkinVertexForwardPass.hlsl"
 
             ENDHLSL
         }
