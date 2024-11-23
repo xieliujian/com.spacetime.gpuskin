@@ -7,7 +7,7 @@ namespace ST.GPUSkin
     /// <summary>
     /// 
     /// </summary>
-    public class Shaders : MonoBehaviour
+    public class GPUSkinShaders : MonoBehaviour
     {
 
     }
