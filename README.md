@@ -7,7 +7,7 @@
 | **包名** | `com.spacetime.gpuskin` |
 | **Unity** | 2020.3 及以上（见 `package.json`） |
 | **命名空间** | `ST.GPUSkin` |
-| **文档配图** | 位于本包下 `readme/tex/`，文件名见 [§5 配图文件](#配图文件)（仅供文档展示，不通过 `Resources` 在运行时加载） |
+| **文档配图** | 位于本包下 `readme/tex/`，`*.png` 与正文章节插图对应（仅供文档展示，不通过 `Resources` 在运行时加载） |
 
 ![概览](readme/tex/overview.png)
 
@@ -22,8 +22,6 @@
 - [2. 材质与 GPU Instancing](#2-材质与-gpu-instancing)  
 - [3. 脚本与全局帧](#3-脚本与全局帧)  
 - [4. 总结](#4-总结)  
-- [5. 包内目录](#5-包内目录)  
-  - [配图文件](#配图文件)
 
 ---
 
@@ -154,30 +152,3 @@ Unity 的 **GPU Instancing** 可将大量同材质、同 Mesh 的物体合并为
 
 整体上，**动画烘焙 + GPU Instancing + 轻量 CPU 侧驱动** 适合同屏多实例、且动画可由「全局/共享时间轴 + 每实例少数参数」表达的场景。若与完整 `Animator` 状态机、复杂 IK/物理混合有强耦合，需单独评估是否适合本方案。
 
----
-
-## 5. 包内目录
-
-| 路径 | 内容 |
-| --- | --- |
-| `Runtime/` | 运行时程序集：`ST.GPUSkin`，含 `GPUSkinMgr`、`GPUSkinBonePlayer`、`GPUSkinVertexPlayer`、各 `*InfoDB` 等。 |
-| `Editor/` | 烘焙与 Inspector：`Editor/Scripts/Tools`（`GPUSkinBoneTool`、`GPUSkinVertexTool` 等）、`Inspector` 等。 |
-| `Shaders/` | `GPUSkinBone`、`GPUSkinVertex` 等 Shader 与 HLSL 公共文件。 |
-| `readme/tex/` | 本文 `README` 用配图，文件名见下表（与包根 `README.md` 相对路径一致）。 |
-
-### 配图文件
-
-| 文件 | 对应章节与内容 |
-| --- | --- |
-| `overview.png` | 文首总览。 |
-| `bone-matrix-baked-texture.png` | §1.1 骨骼矩阵烘焙结果贴图示例。 |
-| `bone-clip-segment-config.png` | §1.1 多段动画在贴图中的起止/片段配置。 |
-| `vertex-position-baked-texture.png` | §1.2 顶点位置烘焙贴图。 |
-| `vertex-clip-segment-config.png` | §1.2 顶点方案动画片段配置。 |
-| `shader-gpu-instancing-props-1.png` – `shader-gpu-instancing-props-3.png` | §2 Shader 中 `UNITY_INSTANCING_BUFFER` 与 `UNITY_ACCESS_INSTANCED_PROP` 示例（三张截图）。 |
-| `script-material-property-block.png` | §2 脚本中 `MaterialPropertyBlock` 设置。 |
-| `frame-debugger-batched-npcs.png` | §2 多 NPC 合批后 Draw Call 统计示例。 |
-| `profiler-npc-anim-update-1.png` – `profiler-npc-anim-update-2.png` | §3 Profiler 中 NPC 动画相关 `Update` 耗时。 |
-| `refactor-gpuskinplayer-no-update.png` | §3 去掉逐实例 `Update` 后的脚本结构。 |
-| `code-gpuskinmgr-global-frame-index.png` | §3 `GPUSkinMgr` 中刷新全局帧索引。 |
-| `shader-gpuskin-global-frame-index.png` | §3 Shader 中使用的全局帧（如 `g_GpuSkinFrameIndex` 相关逻辑）。 |
