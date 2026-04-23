@@ -7,9 +7,9 @@
 | **包名** | `com.spacetime.gpuskin` |
 | **Unity** | 2020.3 及以上（见 `package.json`） |
 | **命名空间** | `ST.GPUSkin` |
-| **文档配图** | 位于本包下 `readme/tex/`，`1.png`–`15.png` 与以下章节一一对应（仅供文档展示，不通过 `Resources` 在运行时加载） |
+| **文档配图** | 位于本包下 `readme/tex/`，文件名见 [§5 配图文件](#配图文件)（仅供文档展示，不通过 `Resources` 在运行时加载） |
 
-![概览](readme/tex/1.png)
+![概览](readme/tex/overview.png)
 
 ## 目录
 
@@ -23,6 +23,7 @@
 - [3. 脚本与全局帧](#3-脚本与全局帧)  
 - [4. 总结](#4-总结)  
 - [5. 包内目录](#5-包内目录)  
+  - [配图文件](#配图文件)
 
 ---
 
@@ -60,8 +61,8 @@ frame2:
 
 | 内容 | 图示 |
 | --- | --- |
-| 骨骼数据贴图示例 | ![骨骼数据贴图](readme/tex/2.png) |
-| 配置数据示例 | ![配置数据](readme/tex/3.png) |
+| 骨骼数据贴图示例 | ![骨骼数据贴图](readme/tex/bone-matrix-baked-texture.png) |
+| 配置数据示例 | ![配置数据](readme/tex/bone-clip-segment-config.png) |
 
 **使用方式要点：**
 
@@ -84,8 +85,8 @@ frame2:  ...
 
 | 内容 | 图示 |
 | --- | --- |
-| 顶点数据贴图 | ![顶点数据贴图](readme/tex/4.png) |
-| 配置数据 | ![配置](readme/tex/5.png) |
+| 顶点数据贴图 | ![顶点数据贴图](readme/tex/vertex-position-baked-texture.png) |
+| 配置数据 | ![配置](readme/tex/vertex-clip-segment-config.png) |
 
 **Shader 侧**：用「当前动画像素偏移、当前帧索引、顶点索引」直接采样得到该帧顶点位置，流程比骨骼方案更直观、计算更少。对应着色器资产：`Shaders/GPUSkin/GPUSkinVertex.shader` 及同目录 HLSL。
 
@@ -112,17 +113,17 @@ Unity 的 **GPU Instancing** 可将大量同材质、同 Mesh 的物体合并为
 1. **材质**：在材质上勾选 **Enable GPU Instancing**。  
 2. **Shader**：对逐实例变化量使用 `UNITY_INSTANCING_BUFFER_START(Props)` / `UNITY_INSTANCING_BUFFER_END(Props)` 包裹，并用 `UNITY_ACCESS_INSTANCED_PROP` 读取。  
 
-   ![Instancing 片段 1](readme/tex/6.png)  
-   ![Instancing 片段 2](readme/tex/7.png)  
-   ![Instancing 片段 3](readme/tex/8.png)  
+   ![Instancing 片段 1](readme/tex/shader-gpu-instancing-props-1.png)  
+   ![Instancing 片段 2](readme/tex/shader-gpu-instancing-props-2.png)  
+   ![Instancing 片段 3](readme/tex/shader-gpu-instancing-props-3.png)  
 
 3. **脚本**：通过 `MaterialPropertyBlock` 为每个实例设置不同参数（而仍共用同一材质）。  
 
-   ![MaterialPropertyBlock](readme/tex/9.png)  
+   ![MaterialPropertyBlock](readme/tex/script-material-property-block.png)  
 
 **示例效果**：约 200 个测试 NPC 时 Draw Call 可压到个位数（如示例中约 3），显著减轻 CPU 批处理与 GPU 状态切换压力。  
 
-![Draw Call 示例](readme/tex/10.png)
+![Draw Call 示例](readme/tex/frame-debugger-batched-npcs.png)
 
 ---
 
@@ -130,14 +131,14 @@ Unity 的 **GPU Instancing** 可将大量同材质、同 Mesh 的物体合并为
 
 在部分机型上（如测试用的 Galaxy S8），大量 NPC 时若每实例在 `Update` 里推进动画帧，**单帧可占用数毫秒级 CPU**。
 
-![Update 热区 1](readme/tex/11.png)  
-![Update 热区 2](readme/tex/12.png)  
+![Update 热区 1](readme/tex/profiler-npc-anim-update-1.png)  
+![Update 热区 2](readme/tex/profiler-npc-anim-update-2.png)  
 
 **思路**：仅在需要切换/设置动画时改材质或 PropertyBlock 参数，**不再每帧在脚本里推帧**；由 **`GPUSkinMgr` 单例** 按 **30 FPS** 刷新 Shader 全局属性 `g_GpuSkinFrameIndex`（见 `Shader.SetGlobalInt(GPUSkinDefine.GPUSKIN_SHADER_COMMON_GLOBAL_FRAME_INDEX_ID, …)`，仅在定义了 `ST_GAME_MODE` 时参与相关编译/调用路径），在 Shader 侧用该全局帧推进时间轴，统一驱动多实例。
 
-![去掉逐实例 Update](readme/tex/13.png)  
-![全局帧逻辑](readme/tex/14.png)  
-![Shader 侧](readme/tex/15.png)  
+![去掉逐实例 Update](readme/tex/refactor-gpuskinplayer-no-update.png)  
+![全局帧逻辑](readme/tex/code-gpuskinmgr-global-frame-index.png)  
+![Shader 侧](readme/tex/shader-gpuskin-global-frame-index.png)  
 
 这样可避免「数百实例 × 每帧脚本逻辑」的放大效应。
 
@@ -162,4 +163,21 @@ Unity 的 **GPU Instancing** 可将大量同材质、同 Mesh 的物体合并为
 | `Runtime/` | 运行时程序集：`ST.GPUSkin`，含 `GPUSkinMgr`、`GPUSkinBonePlayer`、`GPUSkinVertexPlayer`、各 `*InfoDB` 等。 |
 | `Editor/` | 烘焙与 Inspector：`Editor/Scripts/Tools`（`GPUSkinBoneTool`、`GPUSkinVertexTool` 等）、`Inspector` 等。 |
 | `Shaders/` | `GPUSkinBone`、`GPUSkinVertex` 等 Shader 与 HLSL 公共文件。 |
-| `readme/tex/` | 本文 `README` 用配图 `1.png`–`15.png`（与包根 `README.md` 相对路径一致）。 |
+| `readme/tex/` | 本文 `README` 用配图，文件名见下表（与包根 `README.md` 相对路径一致）。 |
+
+### 配图文件
+
+| 文件 | 对应章节与内容 |
+| --- | --- |
+| `overview.png` | 文首总览。 |
+| `bone-matrix-baked-texture.png` | §1.1 骨骼矩阵烘焙结果贴图示例。 |
+| `bone-clip-segment-config.png` | §1.1 多段动画在贴图中的起止/片段配置。 |
+| `vertex-position-baked-texture.png` | §1.2 顶点位置烘焙贴图。 |
+| `vertex-clip-segment-config.png` | §1.2 顶点方案动画片段配置。 |
+| `shader-gpu-instancing-props-1.png` – `shader-gpu-instancing-props-3.png` | §2 Shader 中 `UNITY_INSTANCING_BUFFER` 与 `UNITY_ACCESS_INSTANCED_PROP` 示例（三张截图）。 |
+| `script-material-property-block.png` | §2 脚本中 `MaterialPropertyBlock` 设置。 |
+| `frame-debugger-batched-npcs.png` | §2 多 NPC 合批后 Draw Call 统计示例。 |
+| `profiler-npc-anim-update-1.png` – `profiler-npc-anim-update-2.png` | §3 Profiler 中 NPC 动画相关 `Update` 耗时。 |
+| `refactor-gpuskinplayer-no-update.png` | §3 去掉逐实例 `Update` 后的脚本结构。 |
+| `code-gpuskinmgr-global-frame-index.png` | §3 `GPUSkinMgr` 中刷新全局帧索引。 |
+| `shader-gpuskin-global-frame-index.png` | §3 Shader 中使用的全局帧（如 `g_GpuSkinFrameIndex` 相关逻辑）。 |
