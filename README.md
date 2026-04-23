@@ -1,153 +1,142 @@
+# SpaceTime GPUSkin（`com.spacetime.gpuskin`）
 
-# 大批量模型渲染
+面向 **Unity** 的 GPU 蒙皮与大批量角色渲染方案：将动画数据烘焙到贴图，在 Shader 中采样；配合 **GPU Instancing** 与 **全局帧** 减少 CPU 与 Draw Call 开销。适用于需要同屏大量独立播放动画的角色的场景。
 
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/1.png?raw=true)
+| 项 | 说明 |
+| --- | --- |
+| **包名** | `com.spacetime.gpuskin` |
+| **Unity** | 2020.3 及以上（见 `package.json`） |
+| **命名空间** | `ST.GPUSkin` |
 
-## 动画烘培到贴图
+![概览](Video/1.png)
 
-### 烘培骨骼数据到贴图
+## 目录
 
-通过Animator的StartRecording和StopRecording函数，可以将一个动画数据一帧帧记录下来, 默认一秒是30帧，假如是一秒的动画，就是有30帧数据
- 
-获取模型每一帧每根骨骼的矩阵，然后按照顺序存储到贴图上，一个像素有RGBA四个通道，可以存储矩阵的一行数据，所以一根骨骼矩阵数据需要4个像素存储。存储贴图信息如下所示
+- [1. 动画烘焙到贴图](#1-动画烘焙到贴图)  
+  - [1.1 骨骼数据烘焙](#11-骨骼数据烘焙)  
+  - [1.2 顶点动画烘焙](#12-顶点动画烘焙)  
+  - [1.3 骨骼烘焙 vs 顶点烘焙](#13-骨骼烘焙-vs-顶点烘焙)  
+  - [1.4 烘焙带来的性能优势](#14-烘焙带来的性能优势)  
+- [2. 材质与 GPU Instancing](#2-材质与-gpu-instancing)  
+- [3. 脚本与全局帧](#3-脚本与全局帧)  
+- [4. 总结](#4-总结)  
 
-frame1
+---
 
-bone1
- 
-(m00, m01, m02, m03) (m10, m11, m12, m13)(m20, m21,m22, m23)(m30, m31,m32,m33)
- 
-bone2 ....
- 
-frame2 ....
+## 1. 动画烘焙到贴图
 
-一个模型有多个动画的时候，需要记录一个配置信息，第一个动画的数据存到第几个像素，下个动画从这个像素开始继续存储数据就可以了。
+通过 `Animator` 的 `StartRecording` / `StopRecording` 可以按帧记录动画。默认 **30 FPS**（例如 1 秒动画约 30 帧数据）。记录结果写入贴图，Shader 按「动画偏移、帧索引、骨骼或顶点索引」采样，得到当前帧变形数据，从而 **不再依赖每角色 `Animator.Update`**。
 
-这个就可以把一个动画的数据存储到贴图上
+### 1.1 骨骼数据烘焙
 
-最终存储的骨骼数据贴图如下图所示
+对每一帧、每一根骨骼，读取其 **4×4 矩阵**，按行顺序写入贴图：每个像素 **RGBA 四个通道存矩阵的一行**，故 **一根骨骼占 4 个连续像素**。
 
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/2.png?raw=true)
+结构示意：
 
-配置数据如下所示
+```text
+frame1:
+  bone1: (m00~m03) (m10~m13) (m20~m23) (m30~m33)  // 4 个像素
+  bone2: ...
+frame2:
+  ...
+```
 
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/3.png?raw=true)
+多段动画时，用 **配置数据** 记录每段动画在贴图中的起始像素；下一段从该位置继续排布即可。
 
-那么存储到贴图的骨骼数据我们需要怎么读取呢
+| 内容 | 图示 |
+| --- | --- |
+| 骨骼数据贴图示例 | ![骨骼数据贴图](Video/2.png) |
+| 配置数据示例 | ![配置数据](Video/3.png) |
 
-1. Mesh处理，mesh的uv2 存储骨骼的索引信息，uv3 存储 骨骼的权重信息
+**使用方式要点：**
 
-2. Shader读取
+1. **Mesh**：`uv2` 存骨骼索引，`uv3` 存权重。  
+2. **Shader**：根据「当前动画像素偏移 + 当前帧 + 骨骼索引」从贴图取矩阵。若顶点受最多 4 根骨骼影响，则按标准蒙皮：  
+   `matrix1*weight1 + matrix2*weight2 + matrix3*weight3 + matrix4*weight4`  
+   得到本地空间顶点位置。
 
-Shader中通过 当前动画的像素偏移，当前动画的帧索引，当前的骨骼索引，就可以从贴图中获取到当前帧的骨骼矩阵数据
+### 1.2 顶点动画烘焙
 
-假如一个顶点受4根骨骼影响，根据动画算法
+对每一帧记录 **模型顶点位置**，按顺序写入贴图。每个像素用 **RGB 三通道** 即可存一个顶点坐标。
 
-matrix1 * weight1 + matrix2 * weight2 + matrix3 * weight3 + matrix4 * weight4
+```text
+frame1:  vertex1, vertex2, ...
+frame2:  ...
+```
 
-这样就能计算出最终的本地空间的顶点位置
+多动画同样用配置表记录各段在贴图中的起止位置。
 
-### 动画信息烘培到贴图
+| 内容 | 图示 |
+| --- | --- |
+| 顶点数据贴图 | ![顶点数据贴图](Video/4.png) |
+| 配置数据 | ![配置](Video/5.png) |
 
-通过Animator的StartRecording和StopRecording函数，可以将一个动画数据一帧帧记录下来, 默认一秒是30帧，假如是一秒的动画，就是有30帧数据
+**Shader 侧**：用「当前动画像素偏移、当前帧索引、顶点索引」直接采样得到该帧顶点位置，流程比骨骼方案更直观、计算更少。
 
-获取模型每一帧的模型顶点数据，然后按照顺序存储到贴图上，一个像素有RGBA四个通道，只需要
-RGB通道就可以存储一个顶点信息
+### 1.3 骨骼烘焙 vs 顶点烘焙
 
-存储贴图信息如下所示
+| 对比项 | 骨骼烘焙 | 顶点烘焙 |
+| --- | --- | --- |
+| 贴图占用 | 相对较小 | 相对较大（逐顶点存位置） |
+| Shader 复杂度 | 需采样骨骼矩阵并做蒙皮加权和 | 多仅为顶点位置采样，计算更轻 |
+| 对 Mesh 的要求 | 需写入骨骼索引与权重等 | 可使用更接近原始资产的工作流 |
 
-frame1
+**何时优先考虑顶点烘焙**：顶点数有上限、动画总时长较短时（例如约 1500 顶点级），贴图内存可控，顶点烘焙在 Shader 与实现上往往更简单。
 
-vertex1 vertex2 ...
+### 1.4 烘焙带来的性能优势
 
-frame2 
+动画结果预先落在贴图里，运行时只需在 Shader 中查表，**避免大量 `Animator` 的 CPU 骨骼解算**；在大量同屏单位时，能明显降低 CPU 动画相关耗时。
 
-...
+---
 
-一个模型有多个动画的时候，需要记录一个配置信息，第一个动画的数据存到第几个像素，下个动画从这个像素开始继续存储数据就可以了。
+## 2. 材质与 GPU Instancing
 
-这个就可以把一个动画的数据存储到贴图上
+Unity 的 **GPU Instancing** 可将大量同材质、同 Mesh 的物体合并为少量 Draw Call。
 
-最终存储的顶点数据贴图如下图所示
+1. **材质**：在材质上勾选 **Enable GPU Instancing**。  
+2. **Shader**：对逐实例变化量使用 `UNITY_INSTANCING_BUFFER_START(Props)` / `UNITY_INSTANCING_BUFFER_END(Props)` 包裹，并用 `UNITY_ACCESS_INSTANCED_PROP` 读取。  
 
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/4.png?raw=true)
+   ![Instancing 片段 1](Video/6.png)  
+   ![Instancing 片段 2](Video/7.png)  
+   ![Instancing 片段 3](Video/8.png)  
 
-配置数据如下所示
+3. **脚本**：通过 `MaterialPropertyBlock` 为每个实例设置不同参数（而仍共用同一材质）。  
 
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/5.png?raw=true)
+   ![MaterialPropertyBlock](Video/9.png)  
 
-存储到贴图的顶点数据读取比较简单
+**示例效果**：约 200 个测试 NPC 时 Draw Call 可压到个位数（如示例中约 3），显著减轻 CPU 批处理与 GPU 状态切换压力。  
 
-Shader中通过 当前动画的像素偏移，当前动画的帧索引，当前的顶点索引，就可以从贴图中获取到当前帧当前顶点的顶点位置
+![Draw Call 示例](Video/10.png)
 
-### 使用骨骼烘培还是顶点烘培
+---
 
-标题  |   骨骼烘培 | 顶点烘培
-----  |  ----   |  ---
-存储贴图大小 | 骨骼烘培贴图小 | 顶点贴图大
-Shader计算复杂度 | Shader需要采样骨骼信息计算顶点数据，Shader复杂度大 |  Shader只需要采样顶点数据，没有额外的计算
-Mesh修改 | 需要修改原始Mesh，顶点上记录骨骼索引和骨骼权重 | 原始模型
+## 3. 脚本与全局帧
 
-如果项目需求是限制顶点数目，动画总时长少的情况下，比如1500个顶点，通过顶点烘培的贴图内存不大，使用顶点烘培有优势
+在部分机型上（如测试用的 Galaxy S8），大量 NPC 时若每实例在 `Update` 里推进动画帧，**单帧可占用数毫秒级 CPU**。
 
-### 烘培贴图的性能优势
+![Update 热区 1](Video/11.png)  
+![Update 热区 2](Video/12.png)  
 
-因为把动画的最终数据烘培到贴图上，只需要在Shader中查找最终数据，不再需要Animator.Update实时计算骨骼信息，在有大批量动画的情况下，可以减少大量CPU动画计算耗时
+**思路**：仅在需要切换/设置动画时改材质或 PropertyBlock 参数，**不再每帧在脚本里推帧**；由 **`GPUSkinMgr` 单例** 按 **30 FPS** 刷新 Shader 全局属性 `g_GpuSkinFrameIndex`（见 `Shader.SetGlobalInt(GPUSkinDefine.GPUSKIN_SHADER_COMMON_GLOBAL_FRAME_INDEX_ID, …)`，仅在定义了 `ST_GAME_MODE` 时参与编译路径），在 Shader 侧用该全局帧推进时间轴，统一驱动多实例。
 
-## 材质实例化
+![去掉逐实例 Update](Video/13.png)  
+![全局帧逻辑](Video/14.png)  
+![Shader 侧](Video/15.png)  
 
-unity 支持GPU instance功能，可以大量减少Draw Call
+这样可避免「数百实例 × 每帧脚本逻辑」的放大效应。
 
-1. 材质支持
+---
 
-通过对材质勾选Enable GPU Instancing，就开启了材质Instance
+## 4. 总结
 
-2.  Shader支持
+| 方面 | 说明 |
+| --- | --- |
+| **动画** | 烘焙到贴图后，以采样代替运行时骨骼解算，主要增加显存中的贴图占用。 |
+| **合批** | GPU Instancing + 少量 Draw Call 合并渲染大量相同管线角色。 |
+| **CPU** | 结合全局帧与去 `Update` 化，避免每单位每帧的脚本与 Animator 压力。 |
 
-对于Shader中的实例化参数，需要用UNITY_INSTANCING_BUFFER_START(Props)和UNITY_INSTANCING_BUFFER_END(Props)标记，Shader中获取的时候，通过UNITY_ACCESS_INSTANCED_PROP接口去获取，如下图所示
+整体上，**动画烘焙 + GPU Instancing + 轻量 CPU 侧驱动** 适合同屏多实例、且动画可由「全局/共享时间轴 + 每实例少数参数」表达的场景。若与完整 `Animator` 状态机、复杂 IK/物理混合有强耦合，需单独评估是否适合本方案。
 
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/6.png?raw=true)
+---
 
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/7.png?raw=true)
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/8.png?raw=true)
-
-3. 代码设置
-
-unity提供了MaterialPropertyBlock，可以对同一个材质设置不同的属性值，如下图所示，Shader中传入每个实例的自己的参数值
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/9.png?raw=true)
-
-如下图所示，创建200个测试Npc, Draw Call 数目只有3个，通过GPU instance, 可以减少大批量的Draw Call数，提高GPU的性能
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/10.png?raw=true)
-
-## 游戏内脚本刷新耗时的优化方案
-
-在手机上测试性能，以 Galaxy S8 这部手机为例，发现400个npc, Update耗时会占用 6 ~ 8ms, 
-查看Update函数，就是每帧计算动画的帧信息，中低配手机，Update会占用大量的CPU时间
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/11.png?raw=true)
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/12.png?raw=true)
-
-为了解决这个问题，只在每个脚本设置动画的时候设置一下参数值，去掉Update函数
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/13.png?raw=true)
-
-然后在Shader中有一个全局帧，每隔一帧加一，达到变化动画的目的，这样就解决了脚本耗时的问题
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/14.png?raw=true)
-
-![GitHub](https://github.com/xieliujian/com.spacetime.gpuskin/blob/main/Video/15.png?raw=true)
-
-## 总结
-
-使用动画烘培 + GPU Instance方案，可以在游戏里面同屏展示多个动画实例
-
-相比于Animator动画显示多个角色，有以下几方面优点
-
-1. 没有动画刷新耗时，通过把动画烘培到贴图上，只增加了一些贴图内存
-
-2. 启用GPU Instance方案，可以几个Draw Call 就渲染完多个角色，提升了GPU的性能
-
+**Editor 工具（骨骼 / 顶点烘焙管线）** 见包内 `Editor/Scripts/Tools`（`GPUSkinBoneTool`、`GPUSkinVertexTool` 等）；**运行时** 见 `Runtime/Scripts/Logic`（`GPUSkinBonePlayer`、`GPUSkinVertexPlayer`、`GPUSkinMgr` 等）。

@@ -2,7 +2,17 @@
   "name": "com.spacetime.gpuskin",
   "version": "1.0.0",
   "displayName": "SpaceTime GPUSkin",
-  "description": "SpaceTime GPUSkin",
-  "keywords": [],
+  "description": "GPU 蒙皮与大批量角色方案：将骨骼或顶点动画烘焙到贴图并在 Shader 中采样；可配合 GPU Instancing 与全局帧更新，减少 Animator/脚本 Update 与 Draw Call 开销。",
+  "keywords": [
+    "gpuskin",
+    "GPU skinning",
+    "animation baking",
+    "bone animation",
+    "vertex animation",
+    "GPU instancing",
+    "crowd",
+    "batching",
+    "performance"
+  ],
   "unity": "2020.3"
 }
