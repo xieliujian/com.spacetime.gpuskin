@@ -48,4 +48,35 @@
             ENDHLSL
         }
     }
+
+    // WebGL / OpenGL ES 3.0 compatible SubShader
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+
+        Pass
+        {
+            Tags {"LightMode" = "UniversalForward"}
+
+            Blend [_SrcBlend][_DstBlend]
+            ZTest [_ZTest]
+            ZWrite [_ZWrite]
+
+            HLSLPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.5
+            #pragma multi_compile_instancing
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+            #include "GPUSkinBone/GPUSkinBoneCommon.hlsl"
+            #include "GPUSkinBone/GPUSkinBoneInclude.hlsl"
+            #include "GPUSkinBone/GPUSkinBoneForwardPass.hlsl"
+
+            ENDHLSL
+        }
+    }
 }
