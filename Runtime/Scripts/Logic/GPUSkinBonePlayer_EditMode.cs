@@ -72,10 +72,10 @@ namespace ST.GPUSkin
             if (mat == null)
                 return;
 
-            mat.SetTexture(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_ID, infoDB.texture);
-            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_WIDTH_ID, infoDB.texWidth);
-            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_ANIM_TEX_HEIGHT_ID, infoDB.texHeight);
-            mat.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_BONE_COUNT_ID, infoDB.boneCount);
+            mat.SetTexture(GPUSkinDefine.s_GpuSkin_Shader_Bone_AnimTex, infoDB.texture);
+            mat.SetFloat(GPUSkinDefine.s_GpuSkin_Shader_Bone_AnimTexWidth, infoDB.texWidth);
+            mat.SetFloat(GPUSkinDefine.s_GpuSkin_Shader_Bone_AnimTexHeight, infoDB.texHeight);
+            mat.SetFloat(GPUSkinDefine.s_GpuSkin_Shader_Bone_Count, infoDB.boneCount);
         }
 #endif
     }

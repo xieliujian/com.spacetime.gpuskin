@@ -13,31 +13,31 @@ namespace ST.GPUSkin
         /// <summary>
         /// 
         /// </summary>
-        public const string ST_GAME_MODE_DEFINE = "ST_GAME_MODE";
+        public static readonly string s_GpuSkin_GameModeDefine = "ST_GAME_MODE";
 
         /// <summary>
         /// 
         /// </summary>
-        public static readonly int GPUSKIN_SHADER_COMMON_CUR_FRAME_ID = Shader.PropertyToID("_CurFrame");
-        public static readonly int GPUSKIN_SHADER_COMMON_CUR_FRAME_PIXEL_INDEX_ID = Shader.PropertyToID("_CurFramePixelIndex");
-        public static readonly int GPUSKIN_SHADER_COMMON_CUR_FRAME_COUNT_ID = Shader.PropertyToID("_CurFrameCount");
-        public static readonly int GPUSKIN_SHADER_COMMON_GLOBAL_FRAME_INDEX_ID = Shader.PropertyToID("g_GpuSkinFrameIndex");
+        public static readonly int s_GpuSkin_Shader_Common_CurFrame = Shader.PropertyToID("_CurFrame");
+        public static readonly int s_GpuSkin_Shader_Common_CurFramePixelIndex = Shader.PropertyToID("_CurFramePixelIndex");
+        public static readonly int s_GpuSkin_Shader_Common_CurFrameCount = Shader.PropertyToID("_CurFrameCount");
+        public static readonly int s_GpuSkin_Shader_Common_GlobalFrameIndex = Shader.PropertyToID("g_GpuSkinFrameIndex");
 
         /// <summary>
         /// 
         /// </summary>
-        public static readonly int GPUSKIN_SHADER_VERTEX_ANIM_TEX_ID = Shader.PropertyToID("_VertexAnimTex");
-        public static readonly int GPUSKIN_SHADER_VERTEX_ANIM_TEX_WIDTH_ID = Shader.PropertyToID("_VertexAnimTexWidth");
-        public static readonly int GPUSKIN_SHADER_VERTEX_ANIM_TEX_HEIGHT_ID = Shader.PropertyToID("_VertexAnimTexHeight");
-        public static readonly int GPUSKIN_SHADER_VERTEX_COUNT_ID = Shader.PropertyToID("_VertexCount");
+        public static readonly int s_GpuSkin_Shader_Vertex_AnimTex = Shader.PropertyToID("_VertexAnimTex");
+        public static readonly int s_GpuSkin_Shader_Vertex_AnimTexWidth = Shader.PropertyToID("_VertexAnimTexWidth");
+        public static readonly int s_GpuSkin_Shader_Vertex_AnimTexHeight = Shader.PropertyToID("_VertexAnimTexHeight");
+        public static readonly int s_GpuSkin_Shader_Vertex_Count = Shader.PropertyToID("_VertexCount");
 
         /// <summary>
         /// 
         /// </summary>
-        public static readonly int GPUSKIN_SHADER_BONE_ANIM_TEX_ID = Shader.PropertyToID("_BoneAnimTex");
-        public static readonly int GPUSKIN_SHADER_BONE_ANIM_TEX_WIDTH_ID = Shader.PropertyToID("_BoneAnimTexWidth");
-        public static readonly int GPUSKIN_SHADER_BONE_ANIM_TEX_HEIGHT_ID = Shader.PropertyToID("_BoneAnimTexHeight");
-        public static readonly int GPUSKIN_SHADER_BONE_COUNT_ID = Shader.PropertyToID("_BoneCount");
+        public static readonly int s_GpuSkin_Shader_Bone_AnimTex = Shader.PropertyToID("_BoneAnimTex");
+        public static readonly int s_GpuSkin_Shader_Bone_AnimTexWidth = Shader.PropertyToID("_BoneAnimTexWidth");
+        public static readonly int s_GpuSkin_Shader_Bone_AnimTexHeight = Shader.PropertyToID("_BoneAnimTexHeight");
+        public static readonly int s_GpuSkin_Shader_Bone_Count = Shader.PropertyToID("_BoneCount");
     }
 }
 

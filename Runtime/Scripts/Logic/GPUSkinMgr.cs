@@ -65,7 +65,7 @@ namespace ST.GPUSkin
             if (Time.time - m_LastFrameTime >= frameTime)
             {
                 m_LastFrameTime = Time.time;
-                Shader.SetGlobalInt(GPUSkinDefine.GPUSKIN_SHADER_COMMON_GLOBAL_FRAME_INDEX_ID, m_GlobalFrameIndex++);
+                Shader.SetGlobalInt(GPUSkinDefine.s_GpuSkin_Shader_Common_GlobalFrameIndex, m_GlobalFrameIndex++);
             }
         }
     }

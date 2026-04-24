@@ -40,9 +40,9 @@ namespace ST.GPUSkin
                 return;
 
             renderer.GetPropertyBlock(block);
-            block.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_COMMON_CUR_FRAME_ID, m_LastFrameIndex);
-            block.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_COMMON_CUR_FRAME_PIXEL_INDEX_ID, currentInfo.startPixelIndex);
-            block.SetFloat(GPUSkinDefine.GPUSKIN_SHADER_COMMON_CUR_FRAME_COUNT_ID, currentInfo.frameCount);
+            block.SetFloat(GPUSkinDefine.s_GpuSkin_Shader_Common_CurFrame, m_LastFrameIndex);
+            block.SetFloat(GPUSkinDefine.s_GpuSkin_Shader_Common_CurFramePixelIndex, currentInfo.startPixelIndex);
+            block.SetFloat(GPUSkinDefine.s_GpuSkin_Shader_Common_CurFrameCount, currentInfo.frameCount);
             renderer.SetPropertyBlock(block);
         }
     }
