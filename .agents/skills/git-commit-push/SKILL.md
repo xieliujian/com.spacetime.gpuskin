@@ -54,6 +54,22 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\commit_
 
 推送失败且确认是 GitHub SSH 认证问题时，加 -HttpsFallback。只想本地提交时加 -NoPush。
 
+## Pageant 推送
+
+如果 Pageant 已运行并加载了 GitHub 密钥，在命令中加 -Pageant：
+
+~~~powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\commit_push.ps1" -PackagesRoot "<Packages>" -AllPackages -Auto -Message "Update package code" -Pageant
+~~~
+
+如果 Pageant 尚未运行，可以把 .ppk 路径交给 -PageantKey，脚本会启动 Pageant 并加载该密钥：
+
+~~~powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\commit_push.ps1" -PackagesRoot "<Packages>" -AllPackages -Auto -Message "Update package code" -Pageant -PageantKey "D:\xieliujian\TortoiseGit_github_private_key.ppk"
+~~~
+
+Pageant 模式通过 TortoiseGit 的 TortoiseGitPlink 连接。环境设置只作用于本次脚本，不修改全局 Git 配置。密钥由 Pageant 读取，脚本不会把密钥内容或路径写入仓库。Pageant 已运行时，-PageantKey 不会强制重新加载密钥；请先在 Pageant 中确认目标密钥已经加载。
+
 ## 提交说明
 
 用户给了提交说明就原样使用。没给时，先看 git diff --stat 和实际改动，写一条能说明目的的简短说明；不要用“update files”这类空话。

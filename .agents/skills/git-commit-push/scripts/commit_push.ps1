@@ -10,7 +10,9 @@ param(
     [switch]$IncludeUntracked,
     [switch]$NoPush,
     [switch]$DryRun,
-    [switch]$HttpsFallback
+    [switch]$HttpsFallback,
+    [switch]$Pageant,
+    [string]$PageantKey = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -204,6 +206,64 @@ function ConvertTo-HttpsUrl {
     return ""
 }
 
+function Resolve-Executable {
+    param(
+        [string]$Name,
+        [string[]]$Candidates
+    )
+
+    $command = Get-Command $Name -ErrorAction SilentlyContinue
+    if ($command -and -not [string]::IsNullOrWhiteSpace($command.Source)) {
+        return $command.Source
+    }
+
+    foreach ($candidate in $Candidates) {
+        if (Test-Path -LiteralPath $candidate) {
+            return $candidate
+        }
+    }
+
+    return ""
+}
+
+function Enable-Pageant {
+    param([string]$KeyPath)
+
+    $plink = Resolve-Executable -Name "TortoiseGitPlink" -Candidates @(
+        "D:\Program Files\TortoiseGit\bin\TortoiseGitPlink.exe",
+        "D:\Program Files\TortoiseGit\bin\TortoisePlink.exe"
+    )
+    if ([string]::IsNullOrWhiteSpace($plink)) {
+        throw "TortoiseGitPlink.exe not found. Install TortoiseGit or add it to PATH."
+    }
+
+    $pageantPath = Resolve-Executable -Name "pageant" -Candidates @(
+        "D:\Program Files\TortoiseGit\bin\pageant.exe"
+    )
+
+    $running = @(Get-Process pageant -ErrorAction SilentlyContinue)
+    if ($running.Count -eq 0) {
+        if ([string]::IsNullOrWhiteSpace($KeyPath)) {
+            throw "Pageant is not running. Pass -PageantKey <ppk> or start Pageant with the key loaded."
+        }
+
+        if ([string]::IsNullOrWhiteSpace($pageantPath)) {
+            throw "pageant.exe not found. Install Pageant or add it to PATH."
+        }
+
+        $fullKeyPath = (Resolve-Path -LiteralPath $KeyPath).Path
+        Start-Process -FilePath $pageantPath -ArgumentList ('"' + $fullKeyPath + '"') -WindowStyle Hidden
+        Start-Sleep -Seconds 2
+        $running = @(Get-Process pageant -ErrorAction SilentlyContinue)
+        if ($running.Count -eq 0) {
+            throw "Pageant did not start. Check the key file and Pageant installation."
+        }
+    }
+
+    $env:GIT_SSH_COMMAND = '"' + $plink + '" -batch'
+    $env:GIT_SSH_VARIANT = "plink"
+}
+
 if (-not $Auto -and $Paths.Count -eq 0) {
     throw "Specify -Auto or -Paths."
 }
@@ -232,6 +292,14 @@ if ($AllPackages) {
 
 if ($repos.Count -eq 0) {
     throw "No Git repositories found."
+}
+
+$usePageant = $Pageant -and -not $DryRun -and -not $NoPush
+$oldSshCommand = $env:GIT_SSH_COMMAND
+$oldSshVariant = $env:GIT_SSH_VARIANT
+
+if ($usePageant) {
+    Enable-Pageant -KeyPath $PageantKey
 }
 
 foreach ($repo in $repos) {
@@ -394,7 +462,17 @@ foreach ($repo in $repos) {
         continue
     }
 
-    Add-Result -Repo $name -Branch $state.Branch -Status "pushed" -Commit $hash -Detail "origin/" + $state.Branch
+    $detail = "origin/" + $state.Branch
+    if ($usePageant) {
+        $detail += " via Pageant"
+    }
+
+    Add-Result -Repo $name -Branch $state.Branch -Status "pushed" -Commit $hash -Detail $detail
+}
+
+if ($usePageant) {
+    $env:GIT_SSH_COMMAND = $oldSshCommand
+    $env:GIT_SSH_VARIANT = $oldSshVariant
 }
 
 $results | Format-Table -AutoSize | Out-String -Width 300 | Write-Output
